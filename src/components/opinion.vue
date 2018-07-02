@@ -1,6 +1,13 @@
 <template>
   <div>
-    中泰舆情
+    <div class="opinionTop">
+      <div class="logo">
+        <router-link to="/"></router-link>
+      </div>
+      <div class="middle">
+
+      </div>
+    </div>
   </div>
 </template>
 
@@ -10,6 +17,23 @@ export default {
 }
 </script>
 
-<style>
-
+<style lang="less" scoped>
+.opinionTop{
+  position: relative;
+  width: 100%;
+  height: 60px;
+  .logo{
+    position: absolute;
+    top: 5px;
+    left: 20px;
+    width: 190px;
+    height: 48px;
+    background-image: url("../assets/logo.png");
+  }
+  a{
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+  }
+}
 </style>

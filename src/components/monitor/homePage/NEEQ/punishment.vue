@@ -119,16 +119,23 @@ export default {
       this.isQueryResult = false;
       this.sendData = JSON.parse(JSON.stringify(this.queryCondition));
       console.log('sendData', this.sendData)
-      let url = this.url 
-        // + 'start_date=&end_date=&keyword=天利和&news_date=&page=0&pagesize=10'
-        + 'page=' + this.sendData.page + '&'
-        + 'pagesize=' + this.sendData.page_size + '&'
-        + 'start_date=' + this.sendData.start_date + '&'
-        + 'end_date=' + this.sendData.end_date + '&'
-        + 'news_date=' + this.sendData.news_date + '&'
-        + 'keyword=' + this.sendData.keyword;
-      this.$_axios.get(url)
-      .then(response => {
+      // let url = this.url 
+      //   // + 'start_date=&end_date=&keyword=天利和&news_date=&page=0&pagesize=10'
+      //   + 'page=' + this.sendData.page + '&'
+      //   + 'pagesize=' + this.sendData.page_size + '&'
+      //   + 'start_date=' + this.sendData.start_date + '&'
+      //   + 'end_date=' + this.sendData.end_date + '&'
+      //   + 'news_date=' + this.sendData.news_date + '&'
+      //   + 'keyword=' + this.sendData.keyword;
+      for(let key in this.sendData){
+        if(this.sendData[key] === ''){
+          delete this.sendData[key];
+        }
+      }
+      console.log('sendData',this.sendData)
+      this.$_axios.get(this.url,{
+        params:this.sendData
+      }).then(response => {
         const resultData = response.data.result;
         this.isQueryResult = true;
         console.log('监管公开信息-纪律处分', resultData);
@@ -147,16 +154,19 @@ export default {
     },
     paginationSelect(pageNumber){
       const sendData = JSON.parse(JSON.stringify(this.sendData));
-      let url = this.url 
-        // + 'start_date=&end_date=&keyword=天利和&news_date=&page=0&pagesize=10'
-        + 'page=' + (pageNumber -1) + '&'
-        + 'pagesize=' + sendData.page_size + '&'
-        + 'start_date=' + sendData.start_date + '&'
-        + 'end_date=' + sendData.end_date + '&'
-        + 'news_date=' + sendData.news_date + '&'
-        + 'keyword=' + sendData.keyword;
-      this.$_axios.get(url)
-      .then(response => {
+      // let url = this.url 
+      //   // + 'start_date=&end_date=&keyword=天利和&news_date=&page=0&pagesize=10'
+      //   + 'page=' + (pageNumber -1) + '&'
+      //   + 'pagesize=' + sendData.page_size + '&'
+      //   + 'start_date=' + sendData.start_date + '&'
+      //   + 'end_date=' + sendData.end_date + '&'
+      //   + 'news_date=' + sendData.news_date + '&'
+      //   + 'keyword=' + sendData.keyword;
+      sendData.page = pageNumber - 1;
+      console.log('sendData',sendData)
+      this.$_axios.get(this.url,{
+        params:sendData
+      }).then(response => {
         this.isQueryResult = true;
         console.log('监管公开信息-纪律处分', response);
         this.tableData.tr = JSON.parse(JSON.stringify(response.data.result.neeq_news));

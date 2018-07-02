@@ -32,7 +32,7 @@
                 <td class="tableTd" @click="showDetails(item)">{{item.title}}</td>
                 <td class="tableTd">{{item.category}}</td>
                 <td class="tableTd">{{item.publish_date}}</td>
-                <td class="tableTd"><a :href="item.url">来源</a></td>
+                <td class="tableTd"><a :href="item.url" target="_bank">来源</a></td>
               </tr>
             </tbody>
           </table>
@@ -112,17 +112,23 @@ export default {
       this.isShowQueryResult = true;
       this.hasResultData = false;
       this.sendData = JSON.parse(JSON.stringify(this.queryCondition));
-      console.log('sendData', this.sendData)
-      let url = this.url 
-        // + 'start_date=&end_date=2018-06-01&category=市场禁入&keyword=&page=0&pagesize=10'
-        + 'start_date=' + this.sendData.start_date + '&'
-        + 'end_date=' + this.sendData.end_date + '&'
-        + 'category=' + this.sendData.category + '&'
-        + 'page=' + this.sendData.page + '&'
-        + 'page_size=' + this.sendData.page_size + '&'
-        + 'keyword=' + this.sendData.keyword;
-      this.$_axios.get(url)
-        .then(response => {
+      // let url = this.url 
+      //   // + 'start_date=&end_date=2018-06-01&category=市场禁入&keyword=&page=0&pagesize=10'
+      //   + 'start_date=' + this.sendData.start_date + '&'
+      //   + 'end_date=' + this.sendData.end_date + '&'
+      //   + 'category=' + this.sendData.category + '&'
+      //   + 'page=' + this.sendData.page + '&'
+      //   + 'page_size=' + this.sendData.page_size + '&'
+      //   + 'keyword=' + this.sendData.keyword;
+      for(let key in this.sendData){
+        if(this.sendData[key] === ''){
+          delete this.sendData[key];
+        }
+      }
+      console.log('sendData',this.sendData)
+      this.$_axios.get(this.url,{
+        params:this.sendData
+      }).then(response => {
           const resultData = response.data.result;
           this.hasResultData = true;
           console.log('监管对挂牌公司处罚情况',resultData);
@@ -136,16 +142,19 @@ export default {
     },
     paginationSelect(pageNumber){
       const sendData = JSON.parse(JSON.stringify(this.sendData));
-      let url = this.url 
-        // + 'start_date=&end_date=2018-06-01&category=市场禁入&keyword=&page='+ (pageNumber - 1) +'&pagesize=10'
-        + 'start_date=' + sendData.start_date + '&'
-        + 'end_date=' + sendData.end_date + '&'
-        + 'category=' + sendData.category + '&'
-        + 'page=' + (pageNumber - 1) + '&'
-        + 'page_size=' + sendData.page_size + '&'
-        + 'keyword=' + sendData.keyword;
-      this.$_axios.get(url)
-        .then(response => {
+      // let url = this.url 
+      //   // + 'start_date=&end_date=2018-06-01&category=市场禁入&keyword=&page='+ (pageNumber - 1) +'&pagesize=10'
+      //   + 'start_date=' + sendData.start_date + '&'
+      //   + 'end_date=' + sendData.end_date + '&'
+      //   + 'category=' + sendData.category + '&'
+      //   + 'page=' + (pageNumber - 1) + '&'
+      //   + 'page_size=' + sendData.page_size + '&'
+      //   + 'keyword=' + sendData.keyword;
+      sendData.page = pageNumber - 1;
+      console.log('sendData',sendData)
+      this.$_axios.get(this.url,{
+        params:sendData
+      }).then(response => {
           const resultData = response.data.result;
           this.hasResultData = true;
           console.log('监管对挂牌公司处罚情况',resultData);

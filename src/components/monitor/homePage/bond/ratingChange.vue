@@ -142,19 +142,24 @@ export default {
     query(){
       this.isQueryResult = false;
       this.sendData = JSON.parse(JSON.stringify(this.queryCondition));
-      console.log('sendData', this.sendData)
-      let url = this.url 
-        // + 'start_date=&end_date=&changedate=&creditname=&changeway=03&page=0&pagesize=10';
-        + 'start_date=' + this.sendData.start_date + '&'
-        + 'end_date=' + this.sendData.end_date + '&'
-        + 'changedate=' + this.sendData.changedate + '&'
-        + 'creditname=' + this.sendData.creditname + '&'
-        + 'changeway=' + this.sendData.changeway + '&'
-        + 'page=' + this.sendData.page + '&'
-        + 'pagesize=' + this.sendData.pagesize;
-      console.log('请求')
-      this.$_axios.get(url)
-      .then(response => {
+      // let url = this.url 
+      //   // + 'start_date=&end_date=&changedate=&creditname=&changeway=03&page=0&pagesize=10';
+      //   + 'start_date=' + this.sendData.start_date + '&'
+      //   + 'end_date=' + this.sendData.end_date + '&'
+      //   + 'changedate=' + this.sendData.changedate + '&'
+      //   + 'creditname=' + this.sendData.creditname + '&'
+      //   + 'changeway=' + this.sendData.changeway + '&'
+      //   + 'page=' + this.sendData.page + '&'
+      //   + 'pagesize=' + this.sendData.pagesize;
+      for(let key in this.sendData){
+        if(this.sendData[key] === ''){
+          delete this.sendData[key];
+        }
+      }
+      console.log('sendData',this.sendData)
+      this.$_axios.get(this.url,{
+        params:this.sendData
+      }).then(response => {
         const resultData = response.data.result;
         console.log(JSON.stringify(response.data))
         this.isQueryResult = true;
@@ -169,17 +174,20 @@ export default {
     },
     paginationSelect(pageNumber){
       const sendData = JSON.parse(JSON.stringify(this.sendData));
-      let url = this.url 
-        // + 'start_date=&end_date=&changedate=&creditname=&changeway=03&page='+ (pageNumber - 1) +'&pagesize=10';
-        + 'start_date=' + sendData.start_date + '&'
-        + 'end_date=' + sendData.end_date + '&'
-        + 'changedate=' + sendData.changedate + '&'
-        + 'creditname=' + sendData.creditname + '&'
-        + 'changeway=' + sendData.changeway + '&'
-        + 'page=' + (pageNumber - 1) + '&'
-        + 'pagesize=' + sendData.pagesize;
-      this.$_axios.get(url)
-      .then(response => {
+      // let url = this.url 
+      //   // + 'start_date=&end_date=&changedate=&creditname=&changeway=03&page='+ (pageNumber - 1) +'&pagesize=10';
+      //   + 'start_date=' + sendData.start_date + '&'
+      //   + 'end_date=' + sendData.end_date + '&'
+      //   + 'changedate=' + sendData.changedate + '&'
+      //   + 'creditname=' + sendData.creditname + '&'
+      //   + 'changeway=' + sendData.changeway + '&'
+      //   + 'page=' + (pageNumber - 1) + '&'
+      //   + 'pagesize=' + sendData.pagesize;
+      sendData.page = pageNumber - 1;
+      console.log('sendData',sendData)
+      this.$_axios.get(this.url,{
+        params:sendData
+      }).then(response => {
         const resultData = response.data.result;
         this.isQueryResult = true;
         this.tableData.tr = JSON.parse(JSON.stringify(resultData.result));

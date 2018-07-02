@@ -68,13 +68,16 @@ export default {
   methods:{
     paginationSelect(pageNumber){
       const sendData = JSON.parse(JSON.stringify(this.sendData));
-      let url = this.url 
-        // + 'page=1&page_size=10&keyword='
-        + 'page=' + pageNumber + '&'
-        + 'page_size=' + sendData.page_size + '&'
-        + 'keyword=' + sendData.keyword;
-      this.$_axios.get(url)
-        .then(response => {
+      // let url = this.url 
+      //   // + 'page=1&page_size=10&keyword='
+      //   + 'page=' + pageNumber + '&'
+      //   + 'page_size=' + sendData.page_size + '&'
+      //   + 'keyword=' + sendData.keyword;
+      sendData.page = pageNumber;
+      console.log('sendData',sendData)
+      this.$_axios.get(this.url,{
+        params:sendData
+      }).then(response => {
           console.log('法律法规查询结果',response.data.result);
           this.dataList = JSON.parse(JSON.stringify(response.data.result.Announce_List));
           this.resultData = response.data.result.Announce_List;
@@ -94,14 +97,20 @@ export default {
       this.isShowQueryResult = true;
       this.hasResultData = false;
       this.sendData = JSON.parse(JSON.stringify(this.queryCondition));
-      let url = this.url 
-        // + 'page=1&page_size=10&keyword='
-        + 'page=' + this.sendData.page + '&'
-        + 'page_size=' + this.sendData.page_size + '&'
-        + 'keyword=' + this.sendData.keyword;
-      console.log(this.sendData)
-      this.$_axios.get(url)
-        .then(response => {
+      // let url = this.url 
+      //   // + 'page=1&page_size=10&keyword='
+      //   + 'page=' + this.sendData.page + '&'
+      //   + 'page_size=' + this.sendData.page_size + '&'
+      //   + 'keyword=' + this.sendData.keyword;
+      for(let key in this.sendData){
+        if(!this.sendData[key]){
+          delete this.sendData[key];
+        }
+      }
+      console.log('sendData',this.sendData)
+      this.$_axios.get(this.url,{
+        params:this.sendData
+      }).then(response => {
           // 显示查询结果
           this.hasResultData = true;
           console.log('法律法规查询结果',response.data.result);

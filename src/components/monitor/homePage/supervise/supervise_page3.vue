@@ -121,18 +121,24 @@ export default {
     query(){
       this.isShowQueryResult = false;
       this.sendData = JSON.parse(JSON.stringify(this.queryCondition));
-      console.log('sendData', this.sendData)
-      let url = this.url 
-        // + 'start_date=&end_date=&keyword=%E7%A8%8B%E5%BA%8F&data_source=&page=0&pagesize=10'
-        + 'start_date=' + this.sendData.start_date + '&'
-        + 'end_date=' + this.sendData.end_date + '&'
-        + 'keyword=' + this.sendData.keyword + '&'
-        + 'data_source=' + this.sendData.data_source + '&'
-        + 'page=' + this.sendData.page + '&'
-        + 'pagesize=' + this.sendData.pagesize;
+      // let url = this.url 
+      //   // + 'start_date=&end_date=&keyword=%E7%A8%8B%E5%BA%8F&data_source=&page=0&pagesize=10'
+      //   + 'start_date=' + this.sendData.start_date + '&'
+      //   + 'end_date=' + this.sendData.end_date + '&'
+      //   + 'keyword=' + this.sendData.keyword + '&'
+      //   + 'data_source=' + this.sendData.data_source + '&'
+      //   + 'page=' + this.sendData.page + '&'
+      //   + 'pagesize=' + this.sendData.pagesize;
 
-      this.$_axios.get(url)
-      .then(response =>{
+      for(let key in this.sendData){
+        if(this.sendData[key] === ''){
+          delete this.sendData[key];
+        }
+      }
+      console.log('sendData',this.sendData)
+      this.$_axios.get(this.url,{
+        params:this.sendData
+      }).then(response =>{
         this.isShowQueryResult = true;
         const resultData = response.data.result;
         console.log('监管要求 > 最新监管规则解读', resultData);
@@ -146,17 +152,19 @@ export default {
     },
     paginationSelect(pageNumber){
       const sendData = JSON.parse(JSON.stringify(this.sendData));
-      let url = this.url 
-        // + 'start_date=&end_date=&keyword=%E7%A8%8B%E5%BA%8F&data_source=&page=0&pagesize=10'
-        + 'start_date=' + sendData.start_date + '&'
-        + 'end_date=' + sendData.end_date + '&'
-        + 'keyword=' + sendData.keyword + '&'
-        + 'data_source=' + sendData.data_source + '&'
-        + 'page=' + (pageNumber - 1) + '&'
-        + 'pagesize=' + sendData.pagesize;
-
-      this.$_axios.get(url)
-      .then(response =>{
+      // let url = this.url 
+      //   // + 'start_date=&end_date=&keyword=%E7%A8%8B%E5%BA%8F&data_source=&page=0&pagesize=10'
+      //   + 'start_date=' + sendData.start_date + '&'
+      //   + 'end_date=' + sendData.end_date + '&'
+      //   + 'keyword=' + sendData.keyword + '&'
+      //   + 'data_source=' + sendData.data_source + '&'
+      //   + 'page=' + (pageNumber - 1) + '&'
+      //   + 'pagesize=' + sendData.pagesize;
+      sendData.page = pageNumber - 1;
+      console.log('sendData',sendData)
+      this.$_axios.get(this.url,{
+        params:sendData
+      }).then(response =>{
         this.isShowQueryResult = true;
         const resultData = response.data.result;
         console.log('监管要求 > 最新监管规则解读', resultData);

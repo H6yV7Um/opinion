@@ -69,14 +69,20 @@ export default {
     query(){
       this.isQueryResult = false;
       this.sendData = JSON.parse(JSON.stringify(this.queryCondition));
-      let url = this.url + 'neeq_type=通知公告&'
-        + 'keyword=' + this.sendData.keyword + '&'
-        + 'news_date=' + this.sendData.news_date + '&'
-        + 'page=' + this.sendData.page + '&'
-        + 'pagesize=' + this.sendData.pagesize;
-      console.log(this.sendData)
-      this.$_axios.get(url)
-      .then(response => {
+      // let url = this.url + 'neeq_type=通知公告&'
+      //   + 'keyword=' + this.sendData.keyword + '&'
+      //   + 'news_date=' + this.sendData.news_date + '&'
+      //   + 'page=' + this.sendData.page + '&'
+      //   + 'pagesize=' + this.sendData.pagesize;
+      for(let key in this.sendData){
+        if(this.sendData[key] === ''){
+          delete this.sendData[key];
+        }
+      }
+      console.log('sendData',this.sendData)
+      this.$_axios.get(this.url,{
+        params:this.sendData
+      }).then(response => {
         const resultData = response.data.result;
         this.isQueryResult = true;
         console.log(resultData)
@@ -103,14 +109,16 @@ export default {
     paginationSelect(pageNumber){
       console.log(this.sendData)
       const sendData = JSON.parse(JSON.stringify(this.sendData));
-      console.log(sendData)
-      let url = this.url + 'neeq_type=通知公告&'
-        + 'keyword=' + sendData.keyword + '&'
-        + 'news_date=' + sendData.news_date + '&'
-        + 'page=' + (pageNumber - 1) + '&'
-        + 'pagesize=' + sendData.pagesize;
-      this.$_axios.get(url)
-      .then(response => {
+      // let url = this.url + 'neeq_type=通知公告&'
+      //   + 'keyword=' + sendData.keyword + '&'
+      //   + 'news_date=' + sendData.news_date + '&'
+      //   + 'page=' + (pageNumber - 1) + '&'
+      //   + 'pagesize=' + sendData.pagesize;
+      sendData.page = pageNumber - 1;
+      console.log('sendData',sendData)
+      this.$_axios.get(this.url,{
+        params:sendData
+      }).then(response => {
         const resultData = response.data.result;
         this.isQueryResult = true;
         console.log(resultData)

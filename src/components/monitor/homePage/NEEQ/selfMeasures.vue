@@ -107,19 +107,25 @@ export default {
   methods:{
     query(){
       this.isQueryResult = false;
-      this.sendDate = JSON.parse(JSON.stringify(this.queryCondition));
-      let url = this.url 
-        // + 'start_date=2018-05-01&end_date=2018-06-14&keyword=&equity_no=&news_date=&page=1&pagesize=10';
-        + 'page=' + this.sendDate.page + '&'
-        + 'pagesize=' + this.sendDate.page_size + '&'
-        + 'start_date=' + this.sendDate.start_date + '&'
-        + 'end_date=' + this.sendDate.end_date + '&'
-        + 'equity_no=' + this.sendDate.equity_no + '&'
-        + 'news_date=' + this.sendDate.news_date + '&'
-        + 'keyword=' + this.sendDate.keyword;
-      console.log(this.sendDate)
-      this.$_axios.get(url)
-      .then(response => {
+      this.sendData = JSON.parse(JSON.stringify(this.queryCondition));
+      // let url = this.url 
+      //   // + 'start_date=2018-05-01&end_date=2018-06-14&keyword=&equity_no=&news_date=&page=1&pagesize=10';
+      //   + 'page=' + this.sendData.page + '&'
+      //   + 'pagesize=' + this.sendData.page_size + '&'
+      //   + 'start_date=' + this.sendData.start_date + '&'
+      //   + 'end_date=' + this.sendData.end_date + '&'
+      //   + 'equity_no=' + this.sendData.equity_no + '&'
+      //   + 'news_date=' + this.sendData.news_date + '&'
+      //   + 'keyword=' + this.sendData.keyword;
+      for(let key in this.sendData){
+        if(this.sendData[key] === ''){
+          delete this.sendData[key];
+        }
+      }
+      console.log('sendData',this.sendData)
+      this.$_axios.get(this.url,{
+        params:this.sendData
+      }).then(response => {
         const resultData = response.data.result;
         this.isQueryResult = true;
         console.log('自律监管措施', resultData);
@@ -135,17 +141,20 @@ export default {
     },
     paginationSelect(pageNumber){
       const sendData = JSON.parse(JSON.stringify(this.sendData));
-      let url = this.url 
-        // + 'start_date=2018-05-01&end_date=2018-06-14&keyword=&equity_no=&news_date=&page=1&pagesize=10';
-        + 'page=' + (pageNumber -1) + '&'
-        + 'pagesize=' + sendDate.page_size + '&'
-        + 'start_date=' + sendDate.start_date + '&'
-        + 'end_date=' + sendDate.end_date + '&'
-        + 'equity_no=' + sendDate.equity_no + '&'
-        + 'news_date=' + sendDate.news_date + '&'
-        + 'keyword=' + sendDate.keyword;
-      this.$_axios.get(url)
-      .then(response => {
+      // let url = this.url 
+      //   // + 'start_date=2018-05-01&end_date=2018-06-14&keyword=&equity_no=&news_date=&page=1&pagesize=10';
+      //   + 'page=' + (pageNumber -1) + '&'
+      //   + 'pagesize=' + sendData.page_size + '&'
+      //   + 'start_date=' + sendData.start_date + '&'
+      //   + 'end_date=' + sendData.end_date + '&'
+      //   + 'equity_no=' + sendData.equity_no + '&'
+      //   + 'news_date=' + sendData.news_date + '&'
+      //   + 'keyword=' + sendData.keyword;
+      sendData.page = pageNumber - 1;
+      console.log('sendData',sendData)
+      this.$_axios.get(this.url,{
+        params:sendData
+      }).then(response => {
         const resultData = response.data.result;
         this.isQueryResult = true;
         console.log('自律监管措施', resultData);
